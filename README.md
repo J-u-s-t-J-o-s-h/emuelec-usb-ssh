@@ -97,6 +97,10 @@ Rollback: `ssh emuelec sh -s < handheld/rollback.sh`
 
 ## Licences
 
-`bin/dropbearmulti` is built from dropbear (MIT-style licence, https://github.com/mkj/dropbear).
-`bin/sftp-server` is built from OpenSSH portable (BSD-style licences, https://github.com/openssh/openssh-portable).
-Both unmodified except build-time options listed in `build/README.md`.
+The binaries in `bin/` are redistributed under their upstream licences, included in full in `LICENSES/`:
+
+- `bin/dropbearmulti`: dropbear 2024.86 (https://github.com/mkj/dropbear), see `LICENSES/dropbear-LICENSE`.
+- `bin/sftp-server`: OpenSSH portable 9.9p1 (https://github.com/openssh/openssh-portable), see `LICENSES/openssh-LICENCE`.
+
+Both are unmodified apart from the build-time options listed in `build/README.md`.
+The scripts and documentation in this repository are provided as-is, with no warranty.
