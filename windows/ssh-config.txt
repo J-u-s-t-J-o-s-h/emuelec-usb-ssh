@@ -1,0 +1,19 @@
+# Append to %USERPROFILE%\.ssh\config  (then: ssh emuelec / scp file emuelec:/storage/roms/gba/ / sftp emuelec)
+Host emuelec
+    HostName 172.31.255.2
+    User root
+    IdentityFile ~/.ssh/emuelec_ed25519
+    IdentitiesOnly yes
+    HostKeyAlias emuelec-handheld
+    UserKnownHostsFile ~/.ssh/known_hosts_emuelec
+    ConnectTimeout 8
+
+# Fallback before the static IPv4 is set: IPv6 link-local (replace 64 with the adapter's ifIndex)
+Host emuelec-ll
+    HostName fe80::77:ff:fe00:2%64
+    User root
+    IdentityFile ~/.ssh/emuelec_ed25519
+    IdentitiesOnly yes
+    HostKeyAlias emuelec-handheld
+    UserKnownHostsFile ~/.ssh/known_hosts_emuelec
+    ConnectTimeout 8

@@ -1,0 +1,7 @@
+# Scripts run on the handheld must keep Unix line endings, even on a Windows checkout.
+*.sh       text eol=lf
+*.service  text eol=lf
+*.ps1      text eol=crlf
+*.cmd      text eol=crlf
+bin/*      binary
+bin/SHA256SUMS text eol=lf

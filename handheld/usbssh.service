@@ -1,0 +1,14 @@
+[Unit]
+Description=USB network gadget and SSH (dropbear, key-only)
+After=emustation.service
+ConditionPathExists=!/storage/roms/.usbssh/disable
+ConditionPathExists=/storage/.dropbear/dropbearmulti
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=60
+ExecStart=/bin/sh /storage/.dropbear/usbssh-boot.sh
+
+[Install]
+WantedBy=multi-user.target
