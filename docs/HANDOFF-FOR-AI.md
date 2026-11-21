@@ -12,4 +12,6 @@ Ground rules that worked (and why):
 7. **Keep the charger on the charge-only port** during long work; `zed_gadget.service` powers off at <= 3.40 V when not charging.
 8. Reach the handheld with `ssh emuelec` (needs `windows/ssh-config.txt` in the user's SSH config). Feed scripts with `ssh emuelec sh -s < script.sh` to avoid quoting problems.
 
-Open work (next): Godot game "Monster Truck Backyard Bash" - the ARM Godot binary starts, but Weston fails loading `drm-backend.so` with `undefined symbol: gbm_bo_get_offset`. Launcher: `ports_scripts/Monster Truck Backyard Bash.sh`, game dir `ports/backyardbash`.
+Open work (next): the Godot game. Current state and a ready-to-paste prompt are in `docs/HANDOFF-PROMPT.md`;
+technical detail in `godot/README.md`. Short version: the FRT 4.1.3 runtime renders at ~52 FPS and input works via `gptokeyb`;
+the game must be downgraded from Godot 4.7 to 4.1 (on a copy of the project) and given a new launcher.
