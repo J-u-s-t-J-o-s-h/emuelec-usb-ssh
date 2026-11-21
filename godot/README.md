@@ -4,8 +4,8 @@ Game: "Monster Truck Backyard Bash" (Godot **4.7**, GL Compatibility, 720x720, 3
 one scene built entirely in code). Original launcher: `ports_scripts/Monster Truck Backyard Bash.sh`,
 game dir `/storage/roms/ports/backyardbash/` (`game.pck`, `godot_4.7.1.squashfs`, `weston_pkg_0.2.squashfs`).
 
-Status (2026-11-21): **runs, but too slow to play** through Weston + Xwayland. Decision: move to a
-direct-to-screen runtime (FRT). See "Next step".
+Status (2026-11-21): Weston + Xwayland route runs but is too slow to play. **FRT (Godot 4.1, direct to screen) proven:
+~52 FPS steady** on a 3D smoke test. Controller input not yet reaching Godot. Next: fix input, then downgrade the game 4.7 -> 4.1.
 
 ## Root cause of the original error
 
@@ -70,3 +70,22 @@ Upstream FRT also publishes Godot 3.6.3 arm64 builds (https://github.com/efornar
 
 Plan: inspect both runtimes on the handheld (linked libraries, display backend), smoke-test a small 3D scene for FPS, then port
 the game on a **copy** of the project (never the original source).
+
+## FRT smoke test result (2026-11-21)
+
+`frt_4.1.3` = Godot `4.1.3.stable` (same commit `f06b6836a` as the official 4.1.3 editor), display driver `frt`
+(SDL2 + EGL/libmali + DRM; no Wayland/X11). It needs `GLIBCXX_3.4.30`: bundle Debian 12 `libstdc++6`
+`12.2.0-14+deb12u1` arm64 (package SHA-256 26e138c677a985775331373828a6c286c551ff397cb735d00e2383cb273d1cb2, verified
+against the official Packages index); the extracted `libstdc++.so.6.0.30` has SHA-256
+532f3a12d7b8fef6cc7a064ea106b6c4ab2365674b73e743e4a385d4ffb6c8ab. Audio driver must be `SDL2` (not `ALSA`).
+
+| Measure | Result |
+| --- | --- |
+| Renderer | `Mali-G31 / ARM` |
+| Time to first frame | under 1 s |
+| FPS, 12 rigid bodies, 720x720 | 50-54 for 44 s (log); user saw boxes falling, smooth, ~52 FPS |
+| Exit | clean (`exit code 0`), EmulationStation restored |
+| Controller input | **0 events reached Godot** (built-in pad is `play_joystick`, js0/event0) - next to fix |
+
+Tooling: `frt-smoke41/` (project, export preset), `frt-smoke-run.sh` (runner). Export with the official Godot 4.1.3
+Linux editor (SHA-512 verified from godot-builds): `--headless --editor --quit` then `--headless --export-pack "Linux" smoke41.pck`.
