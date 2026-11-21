@@ -59,9 +59,14 @@ Old diagnostics archived in backyardbash/diagnostics-pre-frt41/.
 ## Next milestones
 1. DONE: handoff and parked experiments pushed in eb2d058.
 2. DONE: initial Pocket Meadow source/build/run tooling pushed as 2206c1c on feat/pocket-meadow.
-3. Handheld initial benchmark 59.98 FPS at native 720x720; automated keyboard movement, hop, pause, pickup, save/reload and quit passed. Evidence in godot/pocket-meadow/evidence/. Screenshot inspected. Final wall-clock frame pacing benchmark in progress.
-4. Install separate Ports entry after final benchmark, then request one physical play-test action. Physical controls and perceived smoothness remain [Unverified].
+3. DONE: handheld automated keyboard movement, hop, pause, pickup, save/reload and quit passed; screenshot inspected. Checkpoint 3c8b24c pushed. Final native-720 benchmark: 59.99 FPS, wall-clock median 16.66 ms / p95 17.40 ms / worst 23.38 ms over about 20 seconds; engine-ready 2.691 s (initial run 4.672 s). Evidence in godot/pocket-meadow/evidence/. Benchmark skips production saves and is not exhaustive.
+4. DONE: separate Pocket Meadow.sh installed in ports_scripts; frontend refreshed; gamelist.xml checksum unchanged. Both bounded test wrappers restored EmulationStation. Next: user opens Pocket Meadow from Ports. Menu visibility, physical controls, audio, perceived smoothness and full playthrough remain [Unverified].
 
 ## Pocket Meadow files
 Source/tooling: godot/pocket-meadow/. PC output: artifacts/pocket-meadow-build/.
 Initial pack: cf9f6c569cd052e8fdaf3eb95593cc149be1ae588d72063b0c867d649c96e39f.
+
+Final installed pack: 7d7d7d2fc623974a5ff6a174b9d665d88b978c091ed29a3760e5981eeaf5bdfa.
+Handheld new game: /storage/roms/ports/pocketmeadow/; normal saves savedata/,
+tests test-savedata/. Shared runtime still backyardbash/frt/. Backyard Bash is
+not replaced. Known test diagnostics and test limits are in the game README.

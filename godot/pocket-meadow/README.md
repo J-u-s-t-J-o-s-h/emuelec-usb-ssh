@@ -39,3 +39,16 @@ and restores EmulationStation. controls-check.gd / test-controls.sh provide the
 separate input/save/quit integration test. Install Pocket Meadow.sh in
 ports_scripts only after testing; do not edit gamelist.xml. Backyard Bash remains
 separate. Normal saves: pocketmeadow/savedata; test saves: test-savedata.
+
+## Final handheld build / installation
+Pack SHA256: `7d7d7d2fc623974a5ff6a174b9d665d88b978c091ed29a3760e5981eeaf5bdfa`.
+Final benchmark: 59.99 FPS, median 16.66 ms, p95 17.40 ms, worst 23.38 ms,
+using actual process-callback wall-clock intervals over about 20 seconds.
+Native 720x720 rendering. Ready at 2.691 seconds from engine start on this run;
+this is not cold-boot or menu-to-first-frame timing. Initial run was 4.672 seconds.
+Evidence: evidence/device-benchmark-final.log. This short automatic route is not
+an exhaustive performance test, and benchmark mode skips production save writes.
+
+Separate Ports launcher installed and frontend refreshed. gamelist.xml checksum
+unchanged (evidence/deployment.txt). [Unverified] User has not yet confirmed the
+menu entry, physical pad input, audio, perceived smoothness or full playthrough.

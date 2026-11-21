@@ -1,0 +1,10 @@
+2026-11-21 via WORKSTATION01 SSH, cmd.exe.
+Final pack SHA256 verified on PC and handheld:
+7d7d7d2fc623974a5ff6a174b9d665d88b978c091ed29a3760e5981eeaf5bdfa
+Installed /storage/roms/ports_scripts/Pocket Meadow.sh after successful tests.
+Launcher SHA256: 4475003795a44dc9b40927d4c32af553bb99c8c0cd3295229a80d4ef2d71120d
+cmp confirmed installed launcher matches staged launcher; sh -n passed.
+sha256sum -c pocketmeadow/gamelist-before.sha256 reported gamelist.xml: OK before and after installation.
+Final benchmark wrapper: TEST_EXIT=0 EMUSTATION=active.
+Controls wrapper: CONTROLS_EXIT=0 EMUSTATION=active.
+Physical playtest and actual menu-entry visibility remain unverified.
