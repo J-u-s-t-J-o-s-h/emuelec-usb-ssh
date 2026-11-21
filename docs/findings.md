@@ -53,3 +53,13 @@ evidence, not directly confirmed. **Unexplained** = observed, cause not determin
 
 Not used. Never connected to the handheld; no evidence of a matching Wi-Fi driver in this kernel.
 `CONFIG_USB_RTL8152=y` is for **wired** Realtek USB Ethernet (useful fallback: an RTL8153 adapter in the data port, untested).
+
+## Godot / graphics (summary - details in `godot/README.md`)
+
+| Finding | Status |
+| --- | --- |
+| libmali r13p0 (EGL 1.4) provides GBM but no Wayland EGL and none of the modern GBM plane/modifier calls | Verified |
+| PortMaster Westonpack's crusty shim makes Weston run here; Godot 4 runs only as an X11 client via Xwayland | Verified |
+| That path is far too slow to play (crusty reported ~0.5 FPS to the panel) | Verified (user-observed lag + log) |
+| Godot's X11 prime-detection probe costs ~40 s at startup; `DRI_PRIME=0` skips it | Verified (user-timed) |
+| Direct-to-screen FRT runtimes are the planned route | Planned |

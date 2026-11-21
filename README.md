@@ -41,6 +41,7 @@ GUI: WinSCP (SFTP, host `172.31.255.2`, user `root`, key `%USERPROFILE%\.ssh\emu
 | `windows/ssh-config.txt` | `Host emuelec` block for `%USERPROFILE%\.ssh\config` | PC |
 | `windows/watch-usb.ps1` | diagnostic: logs every USB/network device change every 2 s | PC |
 | `build/` | reproducible build scripts + notes | Linux/WSL |
+| `godot/` | Godot investigation: test launcher, crash reporter, findings, FRT plan | handheld / reference |
 
 ## Rebuild from scratch
 
