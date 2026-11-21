@@ -97,3 +97,12 @@ Run `gptokeyb 1 frt_4.1.3 -c <file>.gptk -killsignal 15 &` before the game (same
 L1=`Shift`, R1=`S`, L2=`Home`, R2=`End`. D-pad Up arrived as `W` (inference: `Up` never appeared; to confirm).
 Esc did **not** quit FRT (exit shortcut is something else) - the game must handle quitting.
 `gptokeyb` logs `fopen(): Read-only file system` but works.
+
+## Backyard Bash FRT port (2026-11-21)
+The game now has a tested FRT 4.1.3 port and replacement launcher.
+See [backyardbash-frt41/README.md](backyardbash-frt41/README.md) for the reproducible
+copy-and-patch build, keyboard mapping, initial errors and device logs.
+Installed-launcher samples: 30.07 FPS Car Crush, 30.11 Stunt Stars, 28.06 Castle
+Crash; 24 simultaneous castle smashes fall to 20.86 FPS. Select/Escape quit and
+frontend restoration are verified by automated keyboard tests.
+[Unverified] Physical controls and perceived smoothness await the user's play test.

@@ -1,0 +1,1 @@
+Old Weston diagnostic scripts, segvtrace.so, launch-crusty logs and the old FRT smoke pack/logs were moved to `/storage/roms/ports/backyardbash/diagnostics-pre-frt41/` after testing. Nothing was deleted. The original game pack, original runtimes and launcher backup remain available for rollback. `sha256sum -c frt41/gamelist-before.sha256` still reported OK afterward.

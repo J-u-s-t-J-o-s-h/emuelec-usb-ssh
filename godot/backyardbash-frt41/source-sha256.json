@@ -1,0 +1,8 @@
+{
+  "project.godot": "25942a81d8195d1a3fff4909c6fd40793e7a0fed10d48d6b8ebad0df7b58665b",
+  "export_presets.cfg": "0883dfe779c93c4cdb286a3bb864f681bfff6d82f74f3d353bda8dafd8c294d6",
+  "src/main.gd": "c3e7c28651f0c546a47e8e6d05b7143d862ace372fae262691f3c32697b419af",
+  "src/truck.gd": "310c8effcde3eb4de5813a3c56e7b2c623798356ff5359c5b09a5b2acf0f3bae",
+  "src/toy_car.gd": "57a17f7c9804295930be87ce3d88b28fb640fa928776f38c5fcc3f50ce1ce04c",
+  "src/audio_factory.gd": "28f77912d0339d615098a065c6db42b7d00929d4ecc8113bffbedb4646b38048"
+}

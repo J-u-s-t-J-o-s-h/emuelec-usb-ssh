@@ -1,0 +1,4 @@
+ORIGINAL_UNCHANGED: 26 original files byte-identical to the pre-edit tar.gz archive.
+Verified by prepare-repo.py before patch generation.
+Fresh-copy build and exported-pack smoke test passed.
+Deployed pack SHA-256: 5e7dab0e58ae9fee563287f1ce3cbdc6d7af8fb319e3b932755ec56ae153cfe2

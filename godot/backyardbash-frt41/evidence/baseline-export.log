@@ -1,0 +1,17 @@
+Godot Engine v4.1.3.stable.official.f06b6836a - https://godotengine.org
+ 
+WARNING: Custom cursor shape not supported by this display server.
+     at: cursor_set_custom_image (servers/display_server.cpp:480)
+WARNING: Blend file import is enabled in the project settings, but no Blender path is configured in the editor settings. Blend files will not be imported.
+     at: _editor_init (modules/gltf/register_types.cpp:73)
+ERROR: Condition "!preset.is_valid()" is true. Continuing.
+   at: load_config (editor/export/editor_export.cpp:242)
+reimport: begin: (Re)Importing Assets steps: 4
+	reimport: step 1: icon.svg
+	reimport: step 3: declan_horn.wav
+ERROR: Invalid export preset name: Linux/X11.
+The following presets were detected in this project's `export_presets.cfg`:
+
+
+   at: _fs_changed (editor/editor_node.cpp:1003)
+reimport: end

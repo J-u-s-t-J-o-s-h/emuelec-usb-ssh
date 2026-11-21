@@ -1,0 +1,81 @@
+FRT41_START uptime=4391.57
+WARNING: Project setting "rendering/limits/global_shader_variables/buffer_size" exceeds maximum uniform buffer size of: 16384
+     at: MaterialStorage (drivers/gles3/storage/material_storage.cpp:1114)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2047)
+ERROR: Resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:494)
+Godot Engine v4.1.3.stable.custom_build.f06b6836a - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API OpenGL ES 3.2 v1.r13p0-01rel0.8747d14aec16ec21ac2b2da252c4ec5f - Compatibility - Using Device: ARM - Mali-G31
+ 
+GAME_READY exit_handler=batocera
+FRT_CHECK PASS scene
+FRT_CHECK PASS mode right
+FRT_CHECK PASS mode left
+Project FPS: 3 (333.33 mspf)
+FRT_CHECK PASS menu up
+FRT_CHECK PASS A joins garage
+Project FPS: 3 (333.33 mspf)
+FRT_CHECK PASS garage truck choice
+Project FPS: 3 (333.33 mspf)
+Project FPS: 3 (333.33 mspf)
+Project FPS: 3 (333.33 mspf)
+Project FPS: 3 (333.33 mspf)
+Project FPS: 4 (250.00 mspf)
+Project FPS: 3 (333.33 mspf)
+Project FPS: 4 (250.00 mspf)
+Project FPS: 1 (1000.00 mspf)
+Project FPS: 6 (166.66 mspf)
+Project FPS: 8 (125.00 mspf)
+Project FPS: 7 (142.85 mspf)
+Project FPS: 8 (125.00 mspf)
+FRT_CHECK PASS A starts round
+Project FPS: 7 (142.85 mspf)
+Project FPS: 3 (333.33 mspf)
+Project FPS: 8 (125.00 mspf)
+DRIVE_DIAG pressed=true keyboard=true enabled=true throttle=1 speed=20.5 from=(-18, -0.004864, 46) to=(-18, -0.004058, 14.23839)
+FRT_CHECK PASS A accelerates
+Project FPS: 8 (125.00 mspf)
+Project FPS: 10 (100.00 mspf)
+FRT_CHECK PASS B reverses
+FRT_CHECK PASS X horn
+Project FPS: 8 (125.00 mspf)
+FRT_CHECK PASS Start pauses
+FRT_CHECK PASS B resumes
+Project FPS: 7 (142.85 mspf)
+FRT_CHECK PASS customizer keyboard save
+Project FPS: 7 (142.85 mspf)
+Project FPS: 1 (1000.00 mspf)
+Project FPS: 5 (200.00 mspf)
+Project FPS: 7 (142.85 mspf)
+Project FPS: 8 (125.00 mspf)
+Project FPS: 13 (76.92 mspf)
+Project FPS: 18 (55.55 mspf)
+Project FPS: 21 (47.61 mspf)
+Project FPS: 21 (47.61 mspf)
+Project FPS: 20 (50.00 mspf)
+FRT_BENCH mode=0 fps=11.58 score=[0]
+FRT_CHECK PASS HUD score propagation
+Project FPS: 17 (58.82 mspf)
+Project FPS: 9 (111.11 mspf)
+Project FPS: 10 (100.00 mspf)
+Project FPS: 14 (71.42 mspf)
+Project FPS: 20 (50.00 mspf)
+Project FPS: 23 (43.47 mspf)
+Project FPS: 23 (43.47 mspf)
+Project FPS: 21 (47.61 mspf)
+FRT_BENCH mode=1 fps=17.34 score=[0]
+Project FPS: 17 (58.82 mspf)
+Project FPS: 6 (166.66 mspf)
+Project FPS: 5 (200.00 mspf)
+Project FPS: 8 (125.00 mspf)
+Project FPS: 12 (83.33 mspf)
+Project FPS: 14 (71.42 mspf)
+Project FPS: 16 (62.50 mspf)
+Project FPS: 18 (55.55 mspf)
+Project FPS: 17 (58.82 mspf)
+FRT_BENCH mode=2 fps=12.15 score=[0]
+FRT_CHECK_COMPLETE failed=false
+EXIT_TO_BATOCERA source=handheld_select runtime=39.67
+FRT41_EXIT code=0 uptime=4473.94

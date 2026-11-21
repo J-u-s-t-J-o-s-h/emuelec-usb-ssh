@@ -1,0 +1,6 @@
+2 x ERROR: Condition "!preset.is_valid()" is true. Continuing.
+1 x ERROR: Invalid export preset name: Linux/X11.
+1 x SCRIPT ERROR: Invalid set index 'energy_multiplier' (on base: 'PanoramaSkyMaterial') with value of type 'float'.
+1893 x ERROR: Condition "!m" is true. Returning: 0
+1 x ERROR: Resources still in use at exit (run with --verbose for details).
+1 x ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools12BucketMediumE

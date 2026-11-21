@@ -62,4 +62,4 @@ Not used. Never connected to the handheld; no evidence of a matching Wi-Fi drive
 | PortMaster Westonpack's crusty shim makes Weston run here; Godot 4 runs only as an X11 client via Xwayland | Verified |
 | That path is far too slow to play (crusty reported ~0.5 FPS to the panel) | Verified (user-observed lag + log) |
 | Godot's X11 prime-detection probe costs ~40 s at startup; `DRI_PRIME=0` skips it | Verified (user-timed) |
-| Direct-to-screen FRT runtimes are the planned route | Planned |
+| FRT 4.1.3 runs the full adapted game; Car Crush ~30 FPS, heavy castle destruction ~21 FPS | Verified in godot/backyardbash-frt41/evidence/; physical pad play test pending |

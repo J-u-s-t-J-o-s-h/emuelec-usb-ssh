@@ -1,0 +1,2 @@
+GAME_READY exit_handler=handheld_select ticks_ms=466
+SMOKE_PASS players=1 views=1 variants=[0] modes=3 main_menu=1 cars=32 castle=72 ramps=7 boosts=4 mud=3 bumps=0 paints=12 accents=10 toppers=6 score=0 moved=24.93 turned=0.00 jumped=6.01 state=2 save=user://car_crush_save.cfg

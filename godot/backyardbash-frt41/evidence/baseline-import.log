@@ -1,0 +1,10 @@
+Godot Engine v4.1.3.stable.official.f06b6836a - https://godotengine.org
+ 
+WARNING: Custom cursor shape not supported by this display server.
+     at: cursor_set_custom_image (servers/display_server.cpp:480)
+WARNING: Blend file import is enabled in the project settings, but no Blender path is configured in the editor settings. Blend files will not be imported.
+     at: _editor_init (modules/gltf/register_types.cpp:73)
+ERROR: Condition "!preset.is_valid()" is true. Continuing.
+   at: load_config (editor/export/editor_export.cpp:242)
+WARNING: Scan thread aborted...
+     at: _notification (editor/editor_file_system.cpp:1224)

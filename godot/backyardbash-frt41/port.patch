@@ -1,0 +1,480 @@
+--- a/project.godot
++++ b/project.godot
+@@ -9,7 +9,7 @@
+ config/name="Monster Truck Backyard Bash"
+ config/description="A gentle 1-4 player backyard monster-truck Car Crush game for young children."
+ run/main_scene="res://scenes/main.tscn"
+-config/features=PackedStringArray("4.7", "GL Compatibility")
++config/features=PackedStringArray("4.1", "GL Compatibility")
+ config/icon="res://icon.svg"
+ boot_splash/bg_color=Color(0.11, 0.59, 0.88, 1)
+ boot_splash/show_image=false
+--- a/export_presets.cfg
++++ b/export_presets.cfg
+@@ -1,7 +1,7 @@
+ [preset.0]
+ 
+-name="Linux/X11"
+-platform="Linux"
++name="Linux"
++platform="Linux/X11"
+ runnable=true
+ advanced_options=false
+ dedicated_server=false
+@@ -24,6 +24,9 @@
+ custom_template/release=""
+ debug/export_console_wrapper=1
+ binary_format/embed_pck=false
+-texture_format/bptc=true
+-texture_format/s3tc=true
++texture_format/bptc=false
++texture_format/s3tc=false
+ texture_format/etc2_astc=false
++
++texture_format/etc2=true
++binary_format/architecture="arm64"
+--- a/src/main.gd
++++ b/src/main.gd
+@@ -120,13 +120,14 @@
+ 	_build_world()
+ 	_build_audio()
+ 	_spawn_toy_cars()
++	_batch_handheld_scenery()
+ 	_build_hud()
+ 	_build_garage_camera()
+ 	hud.set_game_mode(selected_mode, best_mode_scores[selected_mode])
+ 	hud.set_menu_selection(menu_row, selected_player_count)
+ 	hud.set_view_state(BackyardBashHUD.ViewState.MODE_SELECT)
+ 	music_player.play()
+-	print("GAME_READY exit_handler=batocera")
++	print("GAME_READY exit_handler=handheld_select ticks_ms=%d" % Time.get_ticks_msec())
+ 
+ 	if "--handheld" in args:
+ 		call_deferred("_start_handheld")
+@@ -192,6 +193,8 @@
+ 
+ func _process(delta: float) -> void:
+ 	runtime_seconds += delta
++	# The HUD fills the menus; gameplay renders through its own SubViewport.
++	get_viewport().disable_3d = state in [GameState.MODE_SELECT, GameState.GARAGE] or not camera_entries.is_empty()
+ 	if get_tree().paused:
+ 		_update_hud()
+ 		return
+@@ -255,6 +258,11 @@
+ 	get_tree().quit(0)
+ 
+ func _unhandled_input(event: InputEvent) -> void:
++	# FRT has no built-in Escape quit. Select exits from every game state.
++	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
++		_quit_to_batocera("handheld_select")
++		get_viewport().set_input_as_handled()
++		return
+ 	# Start/Options must remain available even while a player is inside the
+ 	# drive-through customizer. This gives every joined player a reliable path
+ 	# back to the main mode menu from anywhere in an active round.
+@@ -424,7 +432,7 @@
+ 				choice_delta = -1
+ 			KEY_RIGHT:
+ 				choice_delta = 1
+-			KEY_UP:
++			KEY_UP, KEY_W:
+ 				row_delta = -1
+ 			KEY_DOWN:
+ 				row_delta = 1
+@@ -644,7 +652,7 @@
+ 			horizontal = -1
+ 		elif event.keycode == KEY_RIGHT:
+ 			horizontal = 1
+-		elif event.keycode == KEY_UP:
++		elif event.keycode == KEY_UP or event.keycode == KEY_W:
+ 			vertical = -1
+ 		elif event.keycode == KEY_DOWN:
+ 			vertical = 1
+@@ -661,7 +669,7 @@
+ 			hud.set_game_mode(selected_mode, best_mode_scores[selected_mode])
+ 			jump_player.pitch_scale = 0.92 + selected_mode * 0.10
+ 		else:
+-			selected_player_count = posmod(selected_player_count - 1 + horizontal, 4) + 1
++			selected_player_count = 1 if "--handheld-frt" in OS.get_cmdline_user_args() else posmod(selected_player_count - 1 + horizontal, 4) + 1
+ 			jump_player.pitch_scale = 0.88 + selected_player_count * 0.08
+ 		jump_player.play()
+ 	hud.set_mode_selection(selected_mode)
+@@ -910,23 +918,16 @@
+ 	var world_environment := WorldEnvironment.new()
+ 	world_environment.name = "SunnyGardenEnvironment"
+ 	var environment := Environment.new()
+-	environment.background_mode = Environment.BG_SKY
+-	var panorama := load("res://assets/vendor/polyhaven/pretoria_gardens/pretoria_gardens_1k.hdr") as Texture2D
+-	if panorama:
+-		var sky_material := PanoramaSkyMaterial.new()
+-		sky_material.panorama = panorama
+-		sky_material.energy_multiplier = 0.62
+-		var sky := Sky.new()
+-		sky.sky_material = sky_material
+-		environment.sky = sky
+-	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
++	environment.background_mode = Environment.BG_COLOR
++	environment.background_color = Color("87cbea")
++	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+ 	environment.ambient_light_color = Color("dff3ff")
+-	environment.ambient_light_energy = 0.46
++	environment.ambient_light_energy = 0.65
+ 	environment.ambient_light_sky_contribution = 0.80
+-	environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
++	environment.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
+ 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+ 	environment.tonemap_exposure = 0.92
+-	environment.adjustment_enabled = true
++	environment.adjustment_enabled = false
+ 	environment.adjustment_brightness = 1.0
+ 	environment.adjustment_contrast = 1.06
+ 	environment.adjustment_saturation = 1.13
+@@ -1288,6 +1289,7 @@
+ 		collision.shape = shape
+ 		area.add_child(collision)
+ 		area.body_entered.connect(_on_castle_piece_entered.bind(index))
++		preload("res://src/handheld_mesh.gd").merge(piece, piece.find_children("*", "MeshInstance3D", true, false))
+ 		castle_pieces.append({"node": piece, "area": area, "transform": piece.transform, "active": true})
+ 	assert(castle_pieces.size() == CASTLE_PIECE_COUNT)
+ 	castle_root.visible = false
+@@ -1514,7 +1516,7 @@
+ 	for i in 14:
+ 		crowd_positions.append(Vector3(65.5, 0.0, -40.3 + i * 6.2))
+ 
+-	for i in crowd_positions.size():
++	for i in range(0, crowd_positions.size(), 5):
+ 		var root := Node3D.new()
+ 		root.name = "CheeringFriend%02d" % i
+ 		root.position = crowd_positions[i]
+@@ -1528,6 +1530,7 @@
+ 		_add_sphere_visual(root, 0.055, Vector3(0.10, 1.52, -0.25), _mat(Color("2b2440"), 0.6), 8, 4)
+ 		_add_tube(root, Vector3(-0.22, 1.05, 0.0), Vector3(-0.55, 1.45, -0.02), 0.075, shirt)
+ 		_add_tube(root, Vector3(0.22, 1.05, 0.0), Vector3(0.55, 1.45, -0.02), 0.075, shirt)
++		preload("res://src/handheld_mesh.gd").merge(root, root.find_children("*", "MeshInstance3D", true, false))
+ 		crowd.append({"node": root, "base_y": root.position.y, "phase": i * 0.71})
+ 
+ 	# Balloons sway over the crowd.
+@@ -1624,7 +1627,7 @@
+ 		var container := SubViewportContainer.new()
+ 		container.name = "Player%dView" % (index + 1)
+ 		container.stretch = true
+-		container.stretch_shrink = 2
++		container.stretch_shrink = 3
+ 		container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 		container.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+ 		split_root.add_child(container)
+@@ -2451,7 +2454,11 @@
+ 			push_error("SMOKE_FAIL player %d score attribution" % (score_index + 1))
+ 			get_tree().quit(5)
+ 			return
+-	await get_tree().process_frame
++	# process_frame fires before _process; allow the HUD consumer to catch up.
++	for _attempt in range(5):
++		if hud.crush_count == crush_count and hud.player_scores == player_scores:
++			break
++		await get_tree().process_frame
+ 	if hud.crush_count != crush_count or hud.player_scores != player_scores:
+ 		push_error("SMOKE_FAIL exact HUD counters")
+ 		get_tree().quit(5)
+@@ -2708,6 +2715,7 @@
+ 
+ func _mat(color: Color, roughness := 0.62, metallic := 0.0) -> StandardMaterial3D:
+ 	var material := StandardMaterial3D.new()
++	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+ 	material.albedo_color = color
+ 	material.roughness = roughness
+ 	material.metallic = metallic
+@@ -2796,3 +2804,12 @@
+ 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+ 	instance.material_override = material
+ 	add_child(instance)
++
++func _batch_handheld_scenery() -> void:
++	var parts: Array = []
++	for child in get_children():
++		if child is MeshInstance3D:
++			parts.append(child)
++		elif child is StaticBody3D:
++			parts.append_array(child.find_children("*", "MeshInstance3D", true, false))
++	preload("res://src/handheld_mesh.gd").merge(self, parts)
+--- a/src/truck.gd
++++ b/src/truck.gd
+@@ -305,9 +305,9 @@
+ 	if keyboard_control:
+ 		steering += float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT))
+ 		steering -= float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
+-		if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
++		if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_ENTER):
+ 			throttle = 1.0
+-		if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
++		if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_BACKSPACE):
+ 			reverse = 1.0
+ 	steering = clampf(steering, -1.0, 1.0)
+ 
+@@ -659,6 +659,7 @@
+ 
+ func _material(color: Color, roughness := 0.55, metallic := 0.0, emission := false) -> StandardMaterial3D:
+ 	var material := StandardMaterial3D.new()
++	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+ 	material.albedo_color = color
+ 	material.roughness = roughness
+ 	material.metallic = metallic
+--- a/src/toy_car.gd
++++ b/src/toy_car.gd
+@@ -208,10 +208,12 @@
+ 	trigger_collision.position = Vector3(0.0, 0.8, 0.0)
+ 	trigger.add_child(trigger_collision)
+ 	trigger.body_entered.connect(_on_body_entered)
++	preload("res://src/handheld_mesh.gd").merge(visual, visual.find_children("*", "MeshInstance3D", true, false))
+ 
+ 
+ func _material(color: Color, roughness := 0.5, metallic := 0.0, emission := false) -> StandardMaterial3D:
+ 	var material := StandardMaterial3D.new()
++	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+ 	material.albedo_color = color
+ 	material.roughness = roughness
+ 	material.metallic = metallic
+--- a/src/audio_factory.gd
++++ b/src/audio_factory.gd
+@@ -5,6 +5,8 @@
+ 
+ 
+ static func engine_loop() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/engine_loop.res"):
++		return load("res://assets/generated/engine_loop.res") as AudioStreamWAV
+ 	var seconds := 1.0
+ 	var frames := int(RATE * seconds)
+ 	var samples := PackedFloat32Array()
+@@ -20,6 +22,8 @@
+ 
+ 
+ static func horn() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/horn.res"):
++		return load("res://assets/generated/horn.res") as AudioStreamWAV
+ 	# A friendly, original two-part klaxon: a quick "ah" pickup followed by a
+ 	# longer descending "oo-gah". Additive harmonics provide the buzzy brass
+ 	# character without using or shipping a recorded horn sample.
+@@ -52,6 +56,8 @@
+ 
+ 
+ static func crunch() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/crunch.res"):
++		return load("res://assets/generated/crunch.res") as AudioStreamWAV
+ 	var seconds := 0.62
+ 	var samples := _blank(seconds)
+ 	var rng := RandomNumberGenerator.new()
+@@ -68,6 +74,8 @@
+ 
+ 
+ static func jump() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/jump.res"):
++		return load("res://assets/generated/jump.res") as AudioStreamWAV
+ 	var seconds := 0.52
+ 	var samples := _blank(seconds)
+ 	var phase := 0.0
+@@ -81,6 +89,8 @@
+ 
+ 
+ static func recover() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/recover.res"):
++		return load("res://assets/generated/recover.res") as AudioStreamWAV
+ 	var seconds := 0.72
+ 	var samples := _blank(seconds)
+ 	var phase := 0.0
+@@ -94,6 +104,8 @@
+ 
+ 
+ static func cheer() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/cheer.res"):
++		return load("res://assets/generated/cheer.res") as AudioStreamWAV
+ 	var seconds := 1.28
+ 	var samples := _blank(seconds)
+ 	var rng := RandomNumberGenerator.new()
+@@ -119,6 +131,8 @@
+ 
+ 
+ static func reward() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/reward.res"):
++		return load("res://assets/generated/reward.res") as AudioStreamWAV
+ 	var seconds := 2.0
+ 	var samples := _blank(seconds)
+ 	var notes: Array[float] = [261.63, 329.63, 392.0, 523.25, 659.25, 783.99]
+@@ -134,6 +148,8 @@
+ 
+ 
+ static func music_loop() -> AudioStreamWAV:
++	if "--bake-audio" not in OS.get_cmdline_user_args() and ResourceLoader.exists("res://assets/generated/music_loop.res"):
++		return load("res://assets/generated/music_loop.res") as AudioStreamWAV
+ 	var seconds := 8.0
+ 	var samples := _blank(seconds)
+ 	var melody: Array[float] = [392.0, 493.88, 587.33, 493.88, 659.25, 587.33, 493.88, 392.0,
+--- /dev/null
++++ b/src/handheld_mesh.gd
+@@ -0,0 +1,45 @@
++extends RefCounted
++# Bake rigid visual parts into one vertex-colored mesh. Physics nodes remain intact.
++static func merge(root: Node3D, parts: Array) -> void:
++	if parts.is_empty():
++		return
++	var surface := SurfaceTool.new()
++	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
++	var to_local := root.global_transform.affine_inverse()
++	for part in parts:
++		var node := part as MeshInstance3D
++		if node == null or node.mesh == null:
++			continue
++		var material := node.material_override as StandardMaterial3D
++		if material == null:
++			continue
++		var transform := to_local * node.global_transform
++		for index in node.mesh.get_surface_count():
++			var arrays := node.mesh.surface_get_arrays(index)
++			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
++			var colors := PackedColorArray()
++			colors.resize(vertices.size())
++			var normals := PackedVector3Array()
++			if arrays[Mesh.ARRAY_NORMAL] != null:
++				normals = arrays[Mesh.ARRAY_NORMAL]
++			var normal_basis := transform.basis.inverse().transposed()
++			for v in vertices.size():
++				var normal := (normal_basis * normals[v]).normalized() if v < normals.size() else Vector3.UP
++				var brightness := 0.65 + 0.35 * maxf(0.0, normal.dot(Vector3(-0.4, 0.8, 0.3).normalized()))
++				colors[v] = Color(material.albedo_color.r * brightness, material.albedo_color.g * brightness, material.albedo_color.b * brightness, material.albedo_color.a)
++			arrays[Mesh.ARRAY_COLOR] = colors
++			var colored := ArrayMesh.new()
++			colored.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++			surface.append_from(colored, 0, transform)
++		node.visible = false
++		node.queue_free()
++	var material := StandardMaterial3D.new()
++	material.vertex_color_use_as_albedo = true
++	material.roughness = 0.85
++	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
++	material.cull_mode = BaseMaterial3D.CULL_DISABLED
++	var merged := MeshInstance3D.new()
++	merged.name = "HandheldBatchedVisual"
++	merged.mesh = surface.commit()
++	merged.material_override = material
++	root.add_child(merged)
+--- /dev/null
++++ b/tests/handheld_check.gd
+@@ -0,0 +1,98 @@
++extends SceneTree
++var game
++var failed := false
++func _initialize() -> void:
++	call_deferred("_run")
++func check(ok: bool, label: String) -> void:
++	print("FRT_CHECK %s %s" % ["PASS" if ok else "FAIL", label])
++	if not ok:
++		failed = true
++func key(code: int, pressed: bool) -> void:
++	var event := InputEventKey.new()
++	event.keycode = code
++	event.physical_keycode = code
++	event.pressed = pressed
++	Input.parse_input_event(event)
++	if DisplayServer.get_name() == "headless":
++		root.push_input(event)
++func tap(code: int) -> void:
++	key(code, true)
++	await create_timer(0.12).timeout
++	key(code, false)
++	await create_timer(0.12).timeout
++func _run() -> void:
++	change_scene_to_file("res://scenes/main.tscn")
++	await process_frame
++	await process_frame
++	game = current_scene
++	check(game != null, "scene")
++	var initial_mode: int = game.selected_mode
++	await tap(KEY_RIGHT)
++	check(game.selected_mode == posmod(initial_mode + 1, 3), "mode right")
++	await tap(KEY_LEFT)
++	check(game.selected_mode == initial_mode, "mode left")
++	while game.selected_mode != 0:
++		await tap(KEY_LEFT)
++	await tap(KEY_DOWN)
++	await tap(KEY_UP)
++	check(game.menu_row == 0, "menu up")
++	await tap(KEY_ENTER)
++	check(game.state == game.GameState.GARAGE, "A joins garage")
++	await tap(KEY_RIGHT)
++	check(game.joined_players[0].variant == 1, "garage truck choice")
++	await tap(KEY_ENTER)
++	await create_timer(7.0).timeout
++	check(game.state == game.GameState.PLAYING, "A starts round")
++	var start: Vector3 = game.truck.global_position
++	key(KEY_ENTER, true)
++	await create_timer(2.0).timeout
++	print("DRIVE_DIAG pressed=%s keyboard=%s enabled=%s throttle=%s speed=%s from=%s to=%s" % [Input.is_key_pressed(KEY_ENTER), game.truck.keyboard_control, game.truck.controls_enabled, game.truck.throttle, game.truck.drive_speed, start, game.truck.global_position])
++	key(KEY_ENTER, false)
++	check(game.truck.global_position.distance_to(start) > 1.0, "A accelerates")
++	key(KEY_BACKSPACE, true)
++	await create_timer(2.0).timeout
++	key(KEY_BACKSPACE, false)
++	check(game.truck.drive_speed < 0.0, "B reverses")
++	await tap(KEY_SPACE)
++	check(game.truck.horn_player.playing, "X horn")
++	await tap(KEY_P)
++	check(paused, "Start pauses")
++	await tap(KEY_BACKSPACE)
++	check(not paused, "B resumes")
++	game._open_customizer(0)
++	await tap(KEY_DOWN)
++	await tap(KEY_RIGHT)
++	await tap(KEY_E)
++	await tap(KEY_ENTER)
++	check(game.customizer_owner == -1, "customizer keyboard save")
++	for mode in 3:
++		game.selected_mode = mode
++		game._restart_game()
++		game._start_round()
++		game.truck.set_test_controls(true, 0.35, 1.0, 0.0)
++		var frames := Engine.get_process_frames()
++		var begin := Time.get_ticks_msec()
++		await create_timer(8.0).timeout
++		var elapsed := (Time.get_ticks_msec() - begin) / 1000.0
++		print("FRT_BENCH mode=%d fps=%.2f score=%s calls=%s primitives=%s process_ms=%.2f physics_ms=%.2f" % [mode, (Engine.get_process_frames() - frames) / elapsed, game.player_scores, Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME), Performance.get_monitor(Performance.TIME_PROCESS)*1000, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)*1000])
++		game.truck.set_test_controls(false)
++		if DisplayServer.get_name() != "headless":
++			root.get_texture().get_image().save_png("user://frt-mode-%d.png" % mode)
++		if mode == 0:
++			var target
++			for car in game.toy_cars:
++				if not car.is_crushed:
++					target = car
++					break
++			if target:
++				target.force_crush(game.truck)
++			await create_timer(0.2).timeout
++			check(game.hud.crush_count == game.crush_count and game.hud.player_scores == game.player_scores, "HUD score propagation")
++	print("FRT_CHECK_COMPLETE failed=%s" % failed)
++	if failed:
++		game._cleanup_for_exit()
++		quit(1)
++		return
++	await tap(KEY_ESCAPE)
++	check(false, "Escape failed to quit")
++	quit(1)
+--- /dev/null
++++ b/tests/bake_audio.gd
+@@ -0,0 +1,18 @@
++extends SceneTree
++func _initialize() -> void:
++	DirAccess.make_dir_recursive_absolute("res://assets/generated")
++	var factory = preload("res://src/audio_factory.gd")
++	var streams := {
++		"engine_loop": factory.engine_loop(), "horn": factory.horn(),
++		"crunch": factory.crunch(), "jump": factory.jump(),
++		"recover": factory.recover(), "cheer": factory.cheer(),
++		"reward": factory.reward(), "music_loop": factory.music_loop(),
++	}
++	for name in streams:
++		var error := ResourceSaver.save(streams[name], "res://assets/generated/%s.res" % name)
++		if error != OK:
++			push_error("AUDIO_BAKE_FAILED %s error=%d" % [name, error])
++			quit(1)
++			return
++	print("AUDIO_BAKE_PASS count=%d" % streams.size())
++	quit(0)
