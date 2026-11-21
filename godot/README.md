@@ -5,7 +5,7 @@ one scene built entirely in code). Original launcher: `ports_scripts/Monster Tru
 game dir `/storage/roms/ports/backyardbash/` (`game.pck`, `godot_4.7.1.squashfs`, `weston_pkg_0.2.squashfs`).
 
 Status (2026-11-21): Weston + Xwayland route runs but is too slow to play. **FRT (Godot 4.1, direct to screen) proven:
-~52 FPS steady** on a 3D smoke test. Controller input not yet reaching Godot. Next: fix input, then downgrade the game 4.7 -> 4.1.
+~52 FPS steady** on a 3D smoke test. Controller input works via `gptokeyb`. Next: downgrade the game 4.7 -> 4.1.
 
 ## Root cause of the original error
 
@@ -85,7 +85,15 @@ against the official Packages index); the extracted `libstdc++.so.6.0.30` has SH
 | Time to first frame | under 1 s |
 | FPS, 12 rigid bodies, 720x720 | 50-54 for 44 s (log); user saw boxes falling, smooth, ~52 FPS |
 | Exit | clean (`exit code 0`), EmulationStation restored |
-| Controller input | **0 events reached Godot** (built-in pad is `play_joystick`, js0/event0) - next to fix |
+| Controller input | Without help: **0 events** - this FRT build never opens gamepads (no `SDL_JoystickOpen`/`SDL_GameControllerOpen` imports), only keyboards. With the firmware's `gptokeyb` + `default.gptk`: **123 key events**, all buttons arrive as keys |
 
 Tooling: `frt-smoke41/` (project, export preset), `frt-smoke-run.sh` (runner). Export with the official Godot 4.1.3
 Linux editor (SHA-512 verified from godot-builds): `--headless --editor --quit` then `--headless --export-pack "Linux" smoke41.pck`.
+
+### Input via gptokeyb (verified 2026-11-21)
+
+Run `gptokeyb 1 frt_4.1.3 -c <file>.gptk -killsignal 15 &` before the game (same form EmulationStation uses).
+`default.gptk` delivered: A=`X`, B=`Z`, X=`C`, Y=`A`, D-pad Left/Right/Down=arrows, Start=`Enter`, Select=`Escape`,
+L1=`Shift`, R1=`S`, L2=`Home`, R2=`End`. D-pad Up arrived as `W` (inference: `Up` never appeared; to confirm).
+Esc did **not** quit FRT (exit shortcut is something else) - the game must handle quitting.
+`gptokeyb` logs `fopen(): Read-only file system` but works.
