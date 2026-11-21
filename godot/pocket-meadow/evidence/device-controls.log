@@ -1,0 +1,45 @@
+MEADOW_RUNNER_START uptime=9610.97
+Godot Engine v4.1.3.stable.custom_build.f06b6836a - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API OpenGL ES 3.2 v1.r13p0-01rel0.8747d14aec16ec21ac2b2da252c4ec5f - Compatibility - Using Device: ARM - Mali-G31
+ 
+MEADOW_READY ticks_ms=2743 stars=24
+MEADOW_CONTROL PASS right movement
+MEADOW_CONTROL PASS up movement
+MEADOW_CONTROL PASS A hop
+MEADOW_CONTROL PASS Start pause
+MEADOW_CONTROL PASS paused movement blocked
+Project FPS: 59 (16.94 mspf)
+MEADOW_CONTROL PASS Start resume
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_CONTROL PASS collectible reachable
+MEADOW_PICKUP id=0 total=1
+MEADOW_CONTROL PASS pickup
+MEADOW_CONTROL PASS saved pickup reload
+MEADOW_CONTROLS_COMPLETE
+MEADOW_QUIT stars=1
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2047)
+MEADOW_RUNNER_EXIT code=0 uptime=9617.70

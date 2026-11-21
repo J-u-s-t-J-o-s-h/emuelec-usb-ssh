@@ -34,6 +34,7 @@ var rock_mesh: SphereMesh
 var benchmark := false
 var test_start := 0
 var test_frames := 0
+var previous_frame_tick := 0
 var frame_samples: Array[float] = []
 
 func _ready() -> void:
@@ -59,6 +60,9 @@ func _ready() -> void:
 		call_deferred("_self_test")
 
 func _process(delta: float) -> void:
+	var frame_tick := Time.get_ticks_usec()
+	var wall_frame_ms := (frame_tick-previous_frame_tick)/1000.0 if previous_frame_tick else 0.0
+	previous_frame_tick = frame_tick
 	clock += delta
 	feedback = maxf(0.0, feedback-delta)
 	if not paused:
@@ -93,7 +97,7 @@ func _process(delta: float) -> void:
 			if test_start == 0:
 				test_start = Time.get_ticks_usec()
 				test_frames = Engine.get_process_frames()
-			frame_samples.append(delta*1000.0)
+			frame_samples.append(wall_frame_ms)
 		if clock > 23.0:
 			frame_samples.sort()
 			var elapsed := (Time.get_ticks_usec()-test_start)/1000000.0

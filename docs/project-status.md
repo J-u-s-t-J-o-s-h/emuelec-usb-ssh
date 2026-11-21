@@ -6,7 +6,7 @@ milestone, before changing direction, and before handing off.
 ## Current goal
 Build a separate simple 3D exploration/collection game for the children.
 Working title: Pocket Meadow. Small open area, free walking, automatic pickups,
-no timer or enemies. This is a design choice, not an already implemented feature.
+no timer or enemies. Implemented in godot/pocket-meadow/project/.
 Prioritize measured smoothness and startup time over scene complexity.
 
 ## Stable Backyard Bash
@@ -58,9 +58,9 @@ Old diagnostics archived in backyardbash/diagnostics-pre-frt41/.
 
 ## Next milestones
 1. DONE: handoff and parked experiments pushed in eb2d058.
-2. Pocket Meadow source/build/run tooling created on feat/pocket-meadow; PC self-test passed and pack exported. Hardware validation next.
-3. Test movement, pickups, save/quit and on-device frame pacing; record evidence.
-4. Deploy separately, then request one physical play-test action.
+2. DONE: initial Pocket Meadow source/build/run tooling pushed as 2206c1c on feat/pocket-meadow.
+3. Handheld initial benchmark 59.98 FPS at native 720x720; automated keyboard movement, hop, pause, pickup, save/reload and quit passed. Evidence in godot/pocket-meadow/evidence/. Screenshot inspected. Final wall-clock frame pacing benchmark in progress.
+4. Install separate Ports entry after final benchmark, then request one physical play-test action. Physical controls and perceived smoothness remain [Unverified].
 
 ## Pocket Meadow files
 Source/tooling: godot/pocket-meadow/. PC output: artifacts/pocket-meadow-build/.
