@@ -20,7 +20,6 @@ var title: Label
 var location := Vector2.ZERO
 var motion := Vector2.ZERO
 var found: Array[int] = []
-var obstacles: Array[Vector3] = []
 var clock := 0.0
 var paused := false
 var hop_time := 0.0
@@ -36,7 +35,6 @@ var world_surface: SurfaceTool
 var cube: BoxMesh
 var trunk_mesh: CylinderMesh
 var cone_mesh: CylinderMesh
-var rock_mesh: SphereMesh
 var benchmark := false
 var test_start := 0
 var test_frames := 0
@@ -94,7 +92,7 @@ func _process(delta: float) -> void:
 		input = input.limit_length()
 		motion = motion.move_toward(input*WALK_SPEED, 28.0*minf(delta,0.1))
 		var step := motion*minf(delta,0.05)
-		# Axis-separated circle-vs-grid collision; small steps prevent tunnelling.
+		# Axis-separated player-box-vs-grid collision; small steps prevent tunnelling.
 		var candidate := location+Vector2(step.x,0)
 		if _walkable(candidate): location.x = candidate.x
 		candidate = location+Vector2(0,step.y)
@@ -249,7 +247,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					stage = (stage+1)%3
 					found.clear()
 					keys.clear()
-					location = Vector2.ZERO
+					location = _point(Vector2i(1,1))
 					_save_progress()
 					get_tree().reload_current_scene()
 					return
@@ -264,10 +262,10 @@ func _notification(what: int) -> void:
 func _position_camera(delta: float, snap := false) -> void:
 	var overview := Input.is_key_pressed(KEY_BACKSPACE)
 	var target := Vector3.ZERO if overview else Vector3(location.x,0.0,location.y)
-	var desired := target+Vector3(0,32,11)
+	var desired := target+Vector3(0,30,16)
 	camera.size = lerpf(camera.size,54.0 if overview else 25.0,1.0-exp(-delta*8.0))
 	camera.position = desired if snap else camera.position.lerp(desired,1.0-exp(-delta*12.0))
-	camera.rotation_degrees = Vector3(-71.0,0,0)
+	camera.rotation_degrees = Vector3(-62.0,0,0)
 
 func _build_world() -> void:
 	world_surface = SurfaceTool.new()

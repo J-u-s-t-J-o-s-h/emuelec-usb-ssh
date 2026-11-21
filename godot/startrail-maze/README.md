@@ -27,3 +27,20 @@ does not manage the frontend. Normal saves: startrailmaze/savedata/.
 
 Status: PC import/self-test/export passed. Handheld SSH timed out during initial
 work. [Unverified] Handheld performance, visual appearance and physical input.
+
+## PC validation update
+Rendered Godot 4.1.3 integration test passed: keyboard walking, A hop, Start
+pause, blocked movement while paused, B overview, wall collision, locked exit,
+winning with keys, A advancing to the next maze at its entrance, and Escape quit.
+See evidence/pc-controls.log. This tests injected keyboard events, not the pad.
+An earlier headless controls run failed its timed walking assertion; the cause
+is [Unverified]. Rendered testing was used to check the actual input/render loop.
+Headless logic self-tests pass. Known shutdown diagnostics: dummy-renderer mesh
+errors in headless tests, and ObjectDB leak warning in the controls harness.
+The initial WSL visual run lacked an ALSA device and fell back to dummy audio;
+subsequent PC visual/input checks explicitly use Dummy. Audio is [Unverified].
+
+Pack after camera/progression fixes:
+f277bc563bf77bcad180494c2e77572d159c9ce069ab76c5765bf23be9502454.
+Checkpoint 2a5c28f was pushed before these follow-up fixes. Final camera uses a
+62-degree downward angle to show wall sides while keeping the character visible.

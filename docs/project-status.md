@@ -75,3 +75,20 @@ Final installed pack: 7d7d7d2fc623974a5ff6a174b9d665d88b978c091ed29a3760e5981eea
 Handheld new game: /storage/roms/ports/pocketmeadow/; normal saves savedata/,
 tests test-savedata/. Shared runtime still backyardbash/frt/. Backyard Bash is
 not replaced. Known test diagnostics and test limits are in the game README.
+
+## Startrail Maze handoff
+Branch feat/startrail-maze; first playable checkpoint 2a5c28f pushed.
+Source/build/runner/tests: godot/startrail-maze/. PC outputs artifacts/startrail-maze-build/.
+Three deterministic 15x15 gardens; three blue keys unlock each exit; 12 optional
+stars; A hop/next maze, hold B overview, Start pause, Select save/quit.
+PC logic self-test and rendered input/progression integration checks pass.
+Screenshot inspected on PC; camera then adjusted from 71 to 62 degrees for wall
+visibility. PC results do not establish handheld performance or physical input.
+Known test warnings and headless input-test failure documented in game README.
+Final candidate pack SHA256 f277bc563bf77bcad180494c2e77572d159c9ce069ab76c5765bf23be9502454.
+Handheld SSH timed out twice; NOTHING from this game has been installed there.
+Next: recover SSH, stage in /storage/roms/ports/startrailmaze/, run detached
+bounded benchmark and controls harness, inspect screenshot, record evidence,
+then install separate Startrail Maze.sh in ports_scripts and verify gamelist
+checksum unchanged. Existing games must remain available. Handheld FPS and
+physical playtest remain [Unverified]. User was asked to turn handheld on.
