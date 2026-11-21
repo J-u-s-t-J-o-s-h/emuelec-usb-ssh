@@ -1,0 +1,183 @@
+--- a/src/handheld_mesh.gd
++++ b/src/handheld_mesh.gd
+@@ -1,38 +1,55 @@
+ extends RefCounted
+-# Bake rigid visual parts into one vertex-colored mesh. Physics nodes remain intact.
++# Build on the PC with --bake-meshes; load the same rigid visual mesh on FRT.
+ static func merge(root: Node3D, parts: Array) -> void:
+ 	if parts.is_empty():
+ 		return
+-	var surface := SurfaceTool.new()
+-	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+-	var to_local := root.global_transform.affine_inverse()
++	var bake := "--bake-meshes" in OS.get_cmdline_user_args()
++	var cache_path := "res://assets/generated/meshes/%s.res" % str(root.get_path()).md5_text()
++	var mesh: ArrayMesh
++	if not bake and ResourceLoader.exists(cache_path):
++		mesh = load(cache_path) as ArrayMesh
++	if mesh == null:
++		var surface := SurfaceTool.new()
++		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
++		var to_local := root.global_transform.affine_inverse()
++		var light_direction := Vector3(-0.4, 0.8, 0.3).normalized()
++		for part in parts:
++			var node := part as MeshInstance3D
++			if node == null or node.mesh == null:
++				continue
++			var source_material := node.material_override as StandardMaterial3D
++			if source_material == null:
++				continue
++			var transform := to_local * node.global_transform
++			for index in node.mesh.get_surface_count():
++				var arrays := node.mesh.surface_get_arrays(index)
++				var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
++				var colors := PackedColorArray()
++				colors.resize(vertices.size())
++				var normals := PackedVector3Array()
++				if arrays[Mesh.ARRAY_NORMAL] != null:
++					normals = arrays[Mesh.ARRAY_NORMAL]
++				var normal_basis := transform.basis.inverse().transposed()
++				for v in vertices.size():
++					var normal := (normal_basis * normals[v]).normalized() if v < normals.size() else Vector3.UP
++					var brightness := 0.65 + 0.35 * maxf(0.0, normal.dot(light_direction))
++					var color := source_material.albedo_color
++					colors[v] = Color(color.r * brightness, color.g * brightness, color.b * brightness, color.a)
++				arrays[Mesh.ARRAY_COLOR] = colors
++				var colored := ArrayMesh.new()
++				colored.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++				surface.append_from(colored, 0, transform)
++		mesh = surface.commit()
++		if bake:
++			DirAccess.make_dir_recursive_absolute("res://assets/generated/meshes")
++			var error := ResourceSaver.save(mesh, cache_path)
++			if error != OK:
++				push_error("MESH_BAKE_FAILED %s error=%d" % [cache_path, error])
+ 	for part in parts:
+ 		var node := part as MeshInstance3D
+-		if node == null or node.mesh == null:
+-			continue
+-		var material := node.material_override as StandardMaterial3D
+-		if material == null:
+-			continue
+-		var transform := to_local * node.global_transform
+-		for index in node.mesh.get_surface_count():
+-			var arrays := node.mesh.surface_get_arrays(index)
+-			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+-			var colors := PackedColorArray()
+-			colors.resize(vertices.size())
+-			var normals := PackedVector3Array()
+-			if arrays[Mesh.ARRAY_NORMAL] != null:
+-				normals = arrays[Mesh.ARRAY_NORMAL]
+-			var normal_basis := transform.basis.inverse().transposed()
+-			for v in vertices.size():
+-				var normal := (normal_basis * normals[v]).normalized() if v < normals.size() else Vector3.UP
+-				var brightness := 0.65 + 0.35 * maxf(0.0, normal.dot(Vector3(-0.4, 0.8, 0.3).normalized()))
+-				colors[v] = Color(material.albedo_color.r * brightness, material.albedo_color.g * brightness, material.albedo_color.b * brightness, material.albedo_color.a)
+-			arrays[Mesh.ARRAY_COLOR] = colors
+-			var colored := ArrayMesh.new()
+-			colored.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+-			surface.append_from(colored, 0, transform)
+-		node.visible = false
+-		node.queue_free()
++		if node != null:
++			node.visible = false
++			node.queue_free()
+ 	var material := StandardMaterial3D.new()
+ 	material.vertex_color_use_as_albedo = true
+ 	material.roughness = 0.85
+@@ -40,6 +57,30 @@
+ 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+ 	var merged := MeshInstance3D.new()
+ 	merged.name = "HandheldBatchedVisual"
+-	merged.mesh = surface.commit()
++	merged.mesh = mesh
+ 	merged.material_override = material
+ 	root.add_child(merged)
++
++# Keep the original material resources so paint changes still update every part.
++static func merge_materials(root: Node3D, parts: Array) -> void:
++	var groups := {}
++	var to_local := root.global_transform.affine_inverse()
++	for part in parts:
++		var node := part as MeshInstance3D
++		if node == null or node.mesh == null or node.material_override == null:
++			continue
++		var material: Material = node.material_override
++		if not groups.has(material):
++			var surface := SurfaceTool.new()
++			surface.begin(Mesh.PRIMITIVE_TRIANGLES)
++			groups[material] = surface
++		var surface: SurfaceTool = groups[material]
++		for index in node.mesh.get_surface_count():
++			surface.append_from(node.mesh, index, to_local * node.global_transform)
++		node.visible = false
++		node.queue_free()
++	for material in groups:
++		var merged := MeshInstance3D.new()
++		merged.mesh = groups[material].commit()
++		merged.material_override = material
++		root.add_child(merged)
+--- a/src/main.gd
++++ b/src/main.gd
+@@ -117,12 +117,19 @@
+ 	capture_castle = "--capture-castle" in args
+ 	capture_paint_shed = "--capture-paint-shed" in args
+ 	_load_save()
++	print("STARTUP_STAGE _load_save ticks_ms=%d" % Time.get_ticks_msec())
+ 	_build_world()
++	print("STARTUP_STAGE _build_world ticks_ms=%d" % Time.get_ticks_msec())
+ 	_build_audio()
++	print("STARTUP_STAGE _build_audio ticks_ms=%d" % Time.get_ticks_msec())
+ 	_spawn_toy_cars()
++	print("STARTUP_STAGE _spawn_toy_cars ticks_ms=%d" % Time.get_ticks_msec())
+ 	_batch_handheld_scenery()
++	print("STARTUP_STAGE _batch_handheld_scenery ticks_ms=%d" % Time.get_ticks_msec())
+ 	_build_hud()
++	print("STARTUP_STAGE _build_hud ticks_ms=%d" % Time.get_ticks_msec())
+ 	_build_garage_camera()
++	print("STARTUP_STAGE _build_garage_camera ticks_ms=%d" % Time.get_ticks_msec())
+ 	hud.set_game_mode(selected_mode, best_mode_scores[selected_mode])
+ 	hud.set_menu_selection(menu_row, selected_player_count)
+ 	hud.set_view_state(BackyardBashHUD.ViewState.MODE_SELECT)
+@@ -1627,7 +1634,7 @@
+ 		var container := SubViewportContainer.new()
+ 		container.name = "Player%dView" % (index + 1)
+ 		container.stretch = true
+-		container.stretch_shrink = 3
++		container.stretch_shrink = 2
+ 		container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 		container.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+ 		split_root.add_child(container)
+--- a/src/truck.gd
++++ b/src/truck.gd
+@@ -575,6 +575,16 @@
+ 				Vector3(sin(angle) * 0.70, 0.0, cos(angle) * 0.70), black, 0.02)
+ 			lug.rotation.y = angle
+ 
++	var batcher = preload("res://src/handheld_mesh.gd")
++	for wheel in wheels:
++		batcher.merge_materials(wheel, wheel.find_children("*", "MeshInstance3D", true, false))
++	for accessory in accessory_roots:
++		batcher.merge_materials(accessory, accessory.find_children("*", "MeshInstance3D", true, false))
++	var body_parts: Array = []
++	for child in visual.get_children():
++		if child is MeshInstance3D:
++			body_parts.append(child)
++	batcher.merge_materials(visual, body_parts)
+ 	_build_dust_trail()
+ 
+ 
+--- /dev/null
++++ b/tests/bake_meshes.gd
+@@ -0,0 +1,11 @@
++extends SceneTree
++func _initialize() -> void:
++	call_deferred("_run")
++func _run() -> void:
++	change_scene_to_file("res://scenes/main.tscn")
++	await process_frame
++	await process_frame
++	print("MESH_BAKE_COMPLETE")
++	current_scene.queue_free()
++	await process_frame
++	quit()

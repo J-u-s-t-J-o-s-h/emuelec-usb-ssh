@@ -105,3 +105,7 @@ The binaries in `bin/` are redistributed under their upstream licences, included
 
 Both are unmodified apart from the build-time options listed in `build/README.md`.
 The scripts and documentation in this repository are provided as-is, with no warranty.
+
+## Current game work
+
+See [living project status and AI handoff](docs/project-status.md).
