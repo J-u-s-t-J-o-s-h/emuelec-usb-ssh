@@ -1,0 +1,19 @@
+config_version=5
+[application]
+config/name="Startrail Maze"
+config/features=PackedStringArray("4.1", "GL Compatibility")
+run/main_scene="res://main.tscn"
+run/max_fps=60
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0.38, 0.67, 0.37, 1)
+[display]
+window/size/viewport_width=720
+window/size/viewport_height=720
+window/size/window_width_override=720
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.54, 0.77, 0.89, 1)
+limits/global_shader_variables/buffer_size=1024

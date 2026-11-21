@@ -4,7 +4,12 @@ Updated 2026-11-21. Keep this file current and push a commit at each working
 milestone, before changing direction, and before handing off.
 
 ## Current goal
-Build a separate simple 3D exploration/collection game for the children.
+Build Startrail Maze: a separate top-down 3D maze adventure targeting roughly 60 FPS.
+User approved 2026-11-21. Three gardens, keys, optional stars, forgiving exploration.
+Current work: feat/startrail-maze, godot/startrail-maze/. Hardware connection timed
+out at start; performance remains [Unverified].
+
+Previous goal: simple 3D exploration/collection game for the children.
 Working title: Pocket Meadow. Small open area, free walking, automatic pickups,
 no timer or enemies. Implemented in godot/pocket-meadow/project/.
 Prioritize measured smoothness and startup time over scene complexity.
