@@ -1,0 +1,12 @@
+Godot Engine v4.1.3.stable.official.f06b6836a - https://godotengine.org
+ 
+MEADOW_READY ticks_ms=237 stars=24
+MEADOW_PICKUP id=0 total=1
+MEADOW_SELF_TEST_PASS
+MEADOW_PICKUP id=0 total=1
+ERROR: Condition "!m" is true. Returning: 0
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:110)
+ERROR: Condition "!m" is true. Returning: 0
+   at: mesh_get_surface_count (servers/rendering/dummy/storage/mesh_storage.h:110)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2047)

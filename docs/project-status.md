@@ -57,7 +57,11 @@ Original launcher backup: frt41/original-ports-launcher.sh
 Old diagnostics archived in backyardbash/diagnostics-pre-frt41/.
 
 ## Next milestones
-1. Commit/push this handoff and parked experiments.
-2. Create new game's source + build/run tooling and commit/push.
+1. DONE: handoff and parked experiments pushed in eb2d058.
+2. Pocket Meadow source/build/run tooling created on feat/pocket-meadow; PC self-test passed and pack exported. Hardware validation next.
 3. Test movement, pickups, save/quit and on-device frame pacing; record evidence.
 4. Deploy separately, then request one physical play-test action.
+
+## Pocket Meadow files
+Source/tooling: godot/pocket-meadow/. PC output: artifacts/pocket-meadow-build/.
+Initial pack: cf9f6c569cd052e8fdaf3eb95593cc149be1ae588d72063b0c867d649c96e39f.
