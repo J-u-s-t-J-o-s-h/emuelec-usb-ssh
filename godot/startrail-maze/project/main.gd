@@ -17,6 +17,7 @@ var route_index := 0
 var route_direction := 1
 var exit_model: Node3D
 var title: Label
+var hud_state := Vector4i(-1,-1,-1,-1)
 var location := Vector2.ZERO
 var motion := Vector2.ZERO
 var found: Array[int] = []
@@ -412,6 +413,9 @@ func _build_hud() -> void:
 	hud.add_child(_label("A: hop   Hold B: map   Start: pause   Select: quit",670,17))
 
 func _update_hud() -> void:
+	var state := Vector4i(stage,keys.size(),found.size(),int(paused)+2*int(won))
+	if state == hud_state: return
+	hud_state = state
 	title.text = ["CLOVER COURT","LAVENDER LANES","SUNSET GARDEN"][stage]
 	counter.text = "Keys %d / 3     Stars %d / %d" % [keys.size(),found.size(),STAR_POINTS.size()]
 	message.text = "PAUSED — Start to continue" if paused else "Find three blue keys to unlock the rainbow gate"

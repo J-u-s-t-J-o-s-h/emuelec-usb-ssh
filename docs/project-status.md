@@ -92,3 +92,12 @@ bounded benchmark and controls harness, inspect screenshot, record evidence,
 then install separate Startrail Maze.sh in ports_scripts and verify gamelist
 checksum unchanged. Existing games must remain available. Handheld FPS and
 physical playtest remain [Unverified]. User was asked to turn handheld on.
+
+### Handheld resumed 2026-11-22
+SSH restored, battery measured 3.893 V, frontend active. Initial maze pack staged
+and bounded test passed/restored frontend: 54.39 FPS at native 720, ready 5.007s,
+p95 19.68ms / worst 25.29ms. Evidence: godot/startrail-maze/evidence/device-baseline.log.
+This misses the target. Candidate caches HUD text by state instead of formatting
+and assigning every frame; PC self-test passed. Candidate SHA256:
+8e45759302727c40bbd6f4eb9c829beb22abac9c2ba9f5c33f76d2fba54a9970.
+Handheld candidate benchmark pending. Ports launcher not installed yet.
