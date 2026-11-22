@@ -119,3 +119,9 @@ Correction: 59.99 FPS at 600 had clipped lower HUD. With complete HUD, suite
 measured 57.55 / 56.43 / 57.02 FPS across three gardens; not final target met.
 See device-600-full-hud.log. Testing 480 internal rendering next, full HUD intact.
 Candidate SHA256 54fddd06b29c5b7601c2a0b768ba3700aecfea00bfca0982ab73f28d6219fee1.
+
+480 with shadowed full HUD also missed: 57.73 / 57.29 / 58.04 FPS.
+Next candidate restores 600 and replaces shadowed text with plain text on dark
+panels, shortening instructions without removing bindings. Cause of bottleneck
+remains [Inference]. PC self-test passed. Pack:
+74b53e5e8545f8e0da97850b5a5df7160e004a283ac9d91dc4fd5cf66fc4e59a.

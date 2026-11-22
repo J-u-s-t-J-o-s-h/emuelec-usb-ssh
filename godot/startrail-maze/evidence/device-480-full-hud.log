@@ -1,0 +1,36 @@
+MAZE_RUNNER_START uptime=52018.85
+Godot Engine v4.1.3.stable.custom_build.f06b6836a - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API OpenGL ES 3.2 v1.r13p0-01rel0.8747d14aec16ec21ac2b2da252c4ec5f - Compatibility - Using Device: ARM - Mali-G31
+ 
+MAZE_READY ticks_ms=2732 stars=12 startup_viewport=(720, 720) stage=0
+MAZE_PICKUP id=0 total=1
+Project FPS: 58 (17.24 mspf)
+Project FPS: 58 (17.24 mspf)
+Project FPS: 58 (17.24 mspf)
+MAZE_PICKUP id=1 total=2
+Project FPS: 58 (17.24 mspf)
+Project FPS: 57 (17.54 mspf)
+Project FPS: 58 (17.24 mspf)
+Project FPS: 57 (17.54 mspf)
+MAZE_PICKUP id=2 total=3
+Project FPS: 57 (17.54 mspf)
+Project FPS: 57 (17.54 mspf)
+Project FPS: 59 (16.94 mspf)
+MAZE_PICKUP id=3 total=4
+Project FPS: 57 (17.54 mspf)
+Project FPS: 58 (17.24 mspf)
+MAZE_KEY id=0 total=1
+Project FPS: 57 (17.54 mspf)
+Project FPS: 59 (16.94 mspf)
+MAZE_PICKUP id=5 total=5
+Project FPS: 57 (17.54 mspf)
+Project FPS: 59 (16.94 mspf)
+Project FPS: 58 (17.24 mspf)
+Project FPS: 58 (17.24 mspf)
+MAZE_PICKUP id=6 total=6
+Project FPS: 57 (17.54 mspf)
+Project FPS: 58 (17.24 mspf)
+Project FPS: 58 (17.24 mspf)
+MAZE_BENCH fps=57.73 median_ms=17.10 p95_ms=18.49 worst_ms=23.73 collected=6
+MAZE_RUNNER_EXIT code=0 uptime=52046.37

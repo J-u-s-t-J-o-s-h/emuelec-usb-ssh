@@ -402,9 +402,6 @@ func _label(text: String, y: float, font_size: int) -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size",font_size)
 	label.add_theme_color_override("font_color",Color("#fff6db"))
-	label.add_theme_color_override("font_shadow_color",Color("#35434e"))
-	label.add_theme_constant_override("shadow_offset_x",2)
-	label.add_theme_constant_override("shadow_offset_y",2)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
@@ -412,13 +409,20 @@ func _build_hud() -> void:
 	var hud := CanvasLayer.new()
 	hud.scale = Vector2.ONE*(float(ProjectSettings.get_setting("display/window/size/viewport_width"))/720.0)
 	add_child(hud)
+	for rect in [Rect2(0,0,720,101),Rect2(0,610,720,110)]:
+		var panel := ColorRect.new()
+		panel.position = rect.position
+		panel.size = rect.size
+		panel.color = Color("#293f49")
+		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hud.add_child(panel)
 	title = _label("STARTRAIL MAZE",16,30)
 	hud.add_child(title)
 	counter = _label("",55,24)
 	hud.add_child(counter)
 	message = _label("",619,20)
 	hud.add_child(message)
-	hud.add_child(_label("A: hop   Hold B: map   Start: pause   Select: quit",670,17))
+	hud.add_child(_label("A Hop   Hold B Map   Start Pause   Select Quit",670,17))
 
 func _update_hud() -> void:
 	var state := Vector4i(stage,keys.size(),found.size(),int(paused)+2*int(won))
@@ -426,9 +430,9 @@ func _update_hud() -> void:
 	hud_state = state
 	title.text = ["CLOVER COURT","LAVENDER LANES","SUNSET GARDEN"][stage]
 	counter.text = "Keys %d / 3     Stars %d / %d" % [keys.size(),found.size(),STAR_POINTS.size()]
-	message.text = "PAUSED — Start to continue" if paused else "Find three blue keys to unlock the rainbow gate"
-	if keys.size()==3 and not paused: message.text = "The gate is open! Find the rainbow arch"
-	if won and not paused: message.text = "Maze complete! A begins the next garden"
+	message.text = "PAUSED — Start to continue" if paused else "Find 3 blue keys, then reach the gate"
+	if keys.size()==3 and not paused: message.text = "Gate open! Find the rainbow arch"
+	if won and not paused: message.text = "Maze complete! A: next garden"
 
 func _build_sound() -> void:
 	var bytes := PackedByteArray()
