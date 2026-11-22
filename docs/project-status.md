@@ -114,3 +114,8 @@ Hardware injected-key controls passed progression, collision, map and quit
 reported 720 at _ready but actual captured render is 600. Fixed HUD scale using
 configured viewport size; final rebuild and all-garden benchmarks pending.
 Current source renders whole scene + HUD at 600, upscaled to physical 720.
+
+Correction: 59.99 FPS at 600 had clipped lower HUD. With complete HUD, suite
+measured 57.55 / 56.43 / 57.02 FPS across three gardens; not final target met.
+See device-600-full-hud.log. Testing 480 internal rendering next, full HUD intact.
+Candidate SHA256 54fddd06b29c5b7601c2a0b768ba3700aecfea00bfca0982ab73f28d6219fee1.
