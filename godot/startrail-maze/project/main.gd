@@ -280,19 +280,28 @@ func _build_world() -> void:
 	cone_mesh.radial_segments = 6
 	cone_mesh.rings = 1
 	var wall_color: Color = [Color("#54ad83"),Color("#a18cdb"),Color("#e99568")][stage]
-	_stamp(cube,Vector3(0,-0.3,0),Vector3(46,0.5,46),Color("#e8d7aa"))
 	for y in WIDTH:
 		for x in WIDTH:
 			var p := _point(Vector2i(x,y))
 			if not _open(Vector2i(x,y)):
 				_stamp(cube,Vector3(p.x,0.52,p.y),Vector3(3,1.05,3),wall_color)
-				_stamp(cube,Vector3(p.x,1.08,p.y),Vector3(2.85,0.12,2.85),wall_color.lightened(0.17))
-			elif (x+y)%2==0:
-				_stamp(cube,Vector3(p.x,-0.035,p.y),Vector3(2.8,0.025,2.8),Color("#f2e4c7"))
+			else:
+				_stamp(cube,Vector3(p.x,-0.15,p.y),Vector3(3,0.3,3),Color("#f2e4c7") if (x+y)%2==0 else Color("#e8d7aa"))
 	var mesh := MeshInstance3D.new()
 	mesh.mesh = world_surface.commit()
 	mesh.material_override = _vertex_material()
 	add_child(mesh)
+	world_surface = null
+
+func _begin_batch() -> void:
+	world_surface = SurfaceTool.new()
+	world_surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+
+func _finish_batch(parent: Node3D) -> void:
+	var mesh := MeshInstance3D.new()
+	mesh.mesh = world_surface.commit()
+	mesh.material_override = _vertex_material()
+	parent.add_child(mesh)
 	world_surface = null
 
 func _build_keys_exit() -> void:
@@ -300,17 +309,21 @@ func _build_keys_exit() -> void:
 		var model := Node3D.new()
 		model.position = Vector3(point.x,0.9,point.y)
 		add_child(model)
-		_part(cube,Vector3.ZERO,Vector3(0.6,0.6,0.6),Color("#64e7ed"),model)
-		_part(cube,Vector3(0,-0.55,0),Vector3(0.18,0.7,0.18),Color("#64e7ed"),model)
-		_part(cube,Vector3(0.18,-0.75,0),Vector3(0.4,0.16,0.18),Color("#64e7ed"),model)
+		_begin_batch()
+		_stamp(cube,Vector3.ZERO,Vector3(0.6,0.6,0.6),Color("#64e7ed"))
+		_stamp(cube,Vector3(0,-0.55,0),Vector3(0.18,0.7,0.18),Color("#64e7ed"))
+		_stamp(cube,Vector3(0.18,-0.75,0),Vector3(0.4,0.16,0.18),Color("#64e7ed"))
+		_finish_batch(model)
 		key_models.append(model)
 	exit_model = Node3D.new()
 	exit_model.position = Vector3(exit_point.x,0,exit_point.y)
 	add_child(exit_model)
+	_begin_batch()
 	for x in [-0.9,0.9]:
-		_part(cube,Vector3(x,1,0),Vector3(0.25,2,0.25),Color("#d56c91"),exit_model)
-	_part(cube,Vector3(0,2,0),Vector3(2.1,0.3,0.3),Color("#f9cd6f"),exit_model)
-	_part(cube,Vector3(0,0.02,0),Vector3(1.8,0.04,1.8),Color("#f9cd6f"),exit_model)
+		_stamp(cube,Vector3(x,1,0),Vector3(0.25,2,0.25),Color("#d56c91"))
+	_stamp(cube,Vector3(0,2,0),Vector3(2.1,0.3,0.3),Color("#f9cd6f"))
+	_stamp(cube,Vector3(0,0.02,0),Vector3(1.8,0.04,1.8),Color("#f9cd6f"))
+	_finish_batch(exit_model)
 
 func _stamp(mesh: PrimitiveMesh, position: Vector3, scale: Vector3, color: Color) -> void:
 	var arrays := mesh.surface_get_arrays(0)
@@ -333,17 +346,6 @@ func _vertex_material() -> StandardMaterial3D:
 	material.vertex_color_use_as_albedo = true
 	return material
 
-func _part(mesh: PrimitiveMesh, position: Vector3, scale: Vector3, color: Color, parent: Node3D) -> void:
-	var instance := MeshInstance3D.new()
-	instance.mesh = mesh
-	instance.position = position
-	instance.scale = scale
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_color = color
-	instance.material_override = material
-	parent.add_child(instance)
-
 func _build_avatar() -> void:
 	avatar = Node3D.new()
 	add_child(avatar)
@@ -352,13 +354,15 @@ func _build_avatar() -> void:
 	var sphere := SphereMesh.new()
 	sphere.radial_segments = 12
 	sphere.rings = 6
-	_part(sphere,Vector3(0,0.65,0),Vector3(1,1.25,0.85),Color("#eaa66e"),body)
-	_part(sphere,Vector3(0,1.4,-0.05),Vector3(0.85,0.85,0.8),Color("#f6cf9b"),body)
-	_part(sphere,Vector3(-0.28,1.95,0),Vector3(0.24,0.7,0.24),Color("#f6cf9b"),body)
-	_part(sphere,Vector3(0.28,1.95,0),Vector3(0.24,0.7,0.24),Color("#f6cf9b"),body)
-	_part(sphere,Vector3(-0.17,1.47,-0.4),Vector3(0.09,0.11,0.07),Color("#3b3747"),body)
-	_part(sphere,Vector3(0.17,1.47,-0.4),Vector3(0.09,0.11,0.07),Color("#3b3747"),body)
-	_part(cube,Vector3(0,0.85,0.3),Vector3(0.65,0.7,0.35),Color("#6b83b4"),body)
+	_begin_batch()
+	_stamp(sphere,Vector3(0,0.65,0),Vector3(1,1.25,0.85),Color("#eaa66e"))
+	_stamp(sphere,Vector3(0,1.4,-0.05),Vector3(0.85,0.85,0.8),Color("#f6cf9b"))
+	_stamp(sphere,Vector3(-0.28,1.95,0),Vector3(0.24,0.7,0.24),Color("#f6cf9b"))
+	_stamp(sphere,Vector3(0.28,1.95,0),Vector3(0.24,0.7,0.24),Color("#f6cf9b"))
+	_stamp(sphere,Vector3(-0.17,1.47,-0.4),Vector3(0.09,0.11,0.07),Color("#3b3747"))
+	_stamp(sphere,Vector3(0.17,1.47,-0.4),Vector3(0.09,0.11,0.07),Color("#3b3747"))
+	_stamp(cube,Vector3(0,0.85,0.3),Vector3(0.65,0.7,0.35),Color("#6b83b4"))
+	_finish_batch(body)
 
 func _build_stars() -> void:
 	var surface := SurfaceTool.new()

@@ -101,3 +101,9 @@ This misses the target. Candidate caches HUD text by state instead of formatting
 and assigning every frame; PC self-test passed. Candidate SHA256:
 8e45759302727c40bbd6f4eb9c829beb22abac9c2ba9f5c33f76d2fba54a9970.
 Handheld candidate benchmark pending. Ports launcher not installed yet.
+
+HUD caching alone: 53.55 FPS. Key/gate batching: 54.62 FPS; neither met target.
+Evidence in device-hud-cache.log and device-key-batching.log. Current candidate
+removes ground hidden beneath walls and redundant wall caps, and batches the
+avatar. Native 720 retained. PC self-test passed; handheld measurement pending.
+Candidate pack: 680a37d5f05dcd1c6ba80dc669f2c164040ee6b011cf5316fb3de2c32ae26000.
