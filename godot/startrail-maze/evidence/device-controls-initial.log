@@ -1,0 +1,26 @@
+MAZE_RUNNER_START uptime=51753.01
+Godot Engine v4.1.3.stable.custom_build.f06b6836a - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API OpenGL ES 3.2 v1.r13p0-01rel0.8747d14aec16ec21ac2b2da252c4ec5f - Compatibility - Using Device: ARM - Mali-G31
+ 
+MAZE_READY ticks_ms=2845 stars=12 viewport=(720, 720) stage=0
+MAZE_INPUT start=(-18, -18) end=(-18, -16.89088) direction=(0, 3) key=4194322 pressed=true
+MAZE_CONTROL PASS keyboard walking
+MAZE_CONTROL PASS A hop
+MAZE_CONTROL PASS Start pause
+MAZE_CONTROL PASS paused movement blocked
+MAZE_CONTROL PASS B overview
+Project FPS: 60 (16.66 mspf)
+MAZE_CONTROL PASS wall collision
+MAZE_CONTROL PASS exit needs keys
+MAZE_WIN stage=0
+MAZE_CONTROL PASS unlocked exit wins
+MAZE_READY ticks_ms=5616 stars=12 viewport=(720, 720) stage=1
+MAZE_CONTROL PASS A next maze
+MAZE_CONTROL PASS next maze starts at entrance
+MAZE_CONTROLS_COMPLETE
+MAZE_QUIT stars=0
+Project FPS: 49 (20.40 mspf)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2047)
+MAZE_RUNNER_EXIT code=0 uptime=51760.63

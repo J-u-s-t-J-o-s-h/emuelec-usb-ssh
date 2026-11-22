@@ -7,40 +7,44 @@ or enemies. A hops; after reaching the unlocked exit, A opens the next garden.
 Hold B for an overview, Start pauses, Select saves and quits. Hopping is cosmetic:
 it does not bypass maze walls. After the third garden the sequence loops.
 
-Uses the measured Pocket Meadow renderer/launcher foundation, but this game's
-handheld performance is [Unverified] until separately measured. Native 720x720,
-60 FPS cap, batched static geometry. All models and sounds generated in code.
+All models and sounds generated in code. Static scenery, avatar, keys and exit
+use batched meshes. HUD text changes only when state changes.
 
+## Build and tests
 Build: sh build.sh /path/to/Godot_v4.1.3-stable_linux.x86_64 /path/to/output
-PC self-test verifies each maze's exit route and collectible positions, wall
-blocking, duplicate pickups, key requirements, saved progress, winning and pause.
-Evidence: evidence/pc-self-test.log. Benchmark mode follows a maze route for
-23 seconds, measuring wall-clock frame intervals after a three-second warmup.
-Benchmark saves are isolated and normal progress is not loaded or written.
+PC self-test verifies maze exit routes and collectible positions, wall blocking,
+duplicate pickups, key requirements, saved progress, winning and pause.
+Rendered controls-check.gd tests injected keyboard input, overview, collision,
+next-maze entrance and Escape quit. It does not establish physical pad behavior.
 
-Deploy files to /storage/roms/ports/startrailmaze/. Runtime shared from
-/storage/roms/ports/backyardbash/frt/. Install Startrail Maze.sh into ports_scripts
-only after hardware checks; never edit gamelist.xml. Test detached using
-systemd-run --unit=startrail-maze-test --quiet sh /storage/roms/ports/startrailmaze/test-maze.sh
-The test restores EmulationStation and uses separate saves. Production runner
-does not manage the frontend. Normal saves: startrailmaze/savedata/.
+Deploy to /storage/roms/ports/startrailmaze/. Shared runtime:
+ /storage/roms/ports/backyardbash/frt/
+Run bounded tests detached:
+ systemd-run --unit=startrail-maze-test --quiet sh /storage/roms/ports/startrailmaze/test-maze.sh
+test-controls.sh checks input; test-suite.sh benchmarks all three gardens and
+overview. Each restores EmulationStation and uses test-savedata/.
+Install Startrail Maze.sh in ports_scripts after validation; never edit gamelist.xml.
+Production saves: startrailmaze/savedata/. Production runner leaves frontend
+lifecycle management to Ports.
 
-Status: PC import/self-test/export passed. Handheld SSH timed out during initial
-work. [Unverified] Handheld performance, visual appearance and physical input.
+Benchmark runs 23 seconds, sampling wall-clock frame intervals after a
+three-second warmup. --benchmark-stage=0/1/2 selects garden; --benchmark-map
+forces overview. Benchmark skips loading/writing production progress.
 
-## PC validation update
-Rendered Godot 4.1.3 integration test passed: keyboard walking, A hop, Start
-pause, blocked movement while paused, B overview, wall collision, locked exit,
-winning with keys, A advancing to the next maze at its entrance, and Escape quit.
-See evidence/pc-controls.log. This tests injected keyboard events, not the pad.
-An earlier headless controls run failed its timed walking assertion; the cause
-is [Unverified]. Rendered testing was used to check the actual input/render loop.
-Headless logic self-tests pass. Known shutdown diagnostics: dummy-renderer mesh
-errors in headless tests, and ObjectDB leak warning in the controls harness.
-The initial WSL visual run lacked an ALSA device and fell back to dummy audio;
-subsequent PC visual/input checks explicitly use Dummy. Audio is [Unverified].
+## Measured optimization history
+Native 720 baseline: 54.39 FPS (device-baseline.log).
+HUD caching alone: 53.55 FPS (device-hud-cache.log).
+Key/gate batching: 54.62 FPS (device-key-batching.log).
+Reduced overlapping surfaces + avatar batching: 56.80 FPS (device-surfaces.log).
+These runs do not establish a controlled causal comparison; all miss the target.
+Current candidate uses 600x600 internal rendering scaled to the 720x720 screen;
+HUD scales with it. [Unverified] Candidate performance pending hardware test.
+Candidate SHA256: 03aaab070783c697b41a3a8d4bc8a6584fb8e4cb9c69e0168767ad00a0da0c69.
 
-Pack after camera/progression fixes:
-f277bc563bf77bcad180494c2e77572d159c9ce069ab76c5765bf23be9502454.
-Checkpoint 2a5c28f was pushed before these follow-up fixes. Final camera uses a
-62-degree downward angle to show wall sides while keeping the character visible.
+## Known limits
+[Unverified] Physical input, audio, perceived smoothness and full user playthrough.
+An earlier timed headless input test failed walking; cause unverified. Rendered
+PC controls tests passed. Headless logic tests pass but shutdown emits dummy
+renderer mesh errors; controls harness emits an ObjectDB leak warning.
+Initial WSL visual test lacked ALSA; later PC tests use Dummy audio.
+Screenshots/evidence explicitly marked PC must not be treated as handheld evidence.

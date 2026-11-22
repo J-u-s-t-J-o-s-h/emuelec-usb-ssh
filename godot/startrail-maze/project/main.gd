@@ -48,6 +48,9 @@ func _ready() -> void:
 		var config := ConfigFile.new()
 		if config.load(SAVE) == OK:
 			stage = clampi(int(config.get_value("maze","stage",0)),0,2)
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--benchmark-stage="):
+			stage = clampi(int(arg.get_slice("=",1)),0,2)
 	_generate_maze()
 	location = _point(Vector2i(1,1))
 	benchmark = "--benchmark" in OS.get_cmdline_user_args()
@@ -67,7 +70,7 @@ func _ready() -> void:
 	add_child(camera)
 	_position_camera(1.0, true)
 	_update_hud()
-	print("MAZE_READY ticks_ms=%d stars=%d" % [Time.get_ticks_msec(), STAR_POINTS.size()])
+	print("MAZE_READY ticks_ms=%d stars=%d startup_viewport=%s stage=%d" % [Time.get_ticks_msec(), STAR_POINTS.size(),get_viewport().size,stage])
 	if "--self-test" in OS.get_cmdline_user_args():
 		call_deferred("_self_test")
 
@@ -261,7 +264,7 @@ func _notification(what: int) -> void:
 		get_tree().quit(0)
 
 func _position_camera(delta: float, snap := false) -> void:
-	var overview := Input.is_key_pressed(KEY_BACKSPACE)
+	var overview := Input.is_key_pressed(KEY_BACKSPACE) or (benchmark and "--benchmark-map" in OS.get_cmdline_user_args())
 	var target := Vector3.ZERO if overview else Vector3(location.x,0.0,location.y)
 	var desired := target+Vector3(0,30,16)
 	camera.size = lerpf(camera.size,54.0 if overview else 25.0,1.0-exp(-delta*8.0))
@@ -407,6 +410,7 @@ func _label(text: String, y: float, font_size: int) -> Label:
 
 func _build_hud() -> void:
 	var hud := CanvasLayer.new()
+	hud.scale = Vector2.ONE*(float(ProjectSettings.get_setting("display/window/size/viewport_width"))/720.0)
 	add_child(hud)
 	title = _label("STARTRAIL MAZE",16,30)
 	hud.add_child(title)

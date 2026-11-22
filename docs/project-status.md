@@ -107,3 +107,10 @@ Evidence in device-hud-cache.log and device-key-batching.log. Current candidate
 removes ground hidden beneath walls and redundant wall caps, and batches the
 avatar. Native 720 retained. PC self-test passed; handheld measurement pending.
 Candidate pack: 680a37d5f05dcd1c6ba80dc669f2c164040ee6b011cf5316fb3de2c32ae26000.
+
+600x600 candidate reached 59.99 FPS, p95 16.73 ms, worst 16.90 ms (device-600.log).
+Hardware injected-key controls passed progression, collision, map and quit
+(device-controls-initial.log). Screenshot exposed HUD clipping: viewport size
+reported 720 at _ready but actual captured render is 600. Fixed HUD scale using
+configured viewport size; final rebuild and all-garden benchmarks pending.
+Current source renders whole scene + HUD at 600, upscaled to physical 720.
