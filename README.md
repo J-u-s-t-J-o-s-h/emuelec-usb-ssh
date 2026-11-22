@@ -109,3 +109,9 @@ The scripts and documentation in this repository are provided as-is, with no war
 ## Current game work
 
 See [living project status and AI handoff](docs/project-status.md).
+
+## Custom games
+
+- [Startrail Maze](godot/startrail-maze/README.md): top-down 3D keys-and-stars maze, with handheld benchmark evidence.
+- [Pocket Meadow](godot/pocket-meadow/README.md): walking and collection game.
+- [Living project handoff](docs/project-status.md): current state and next verification step.

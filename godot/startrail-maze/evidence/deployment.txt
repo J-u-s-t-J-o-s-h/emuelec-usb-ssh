@@ -1,0 +1,10 @@
+2026-11-22: installed through WORKSTATION01 SSH.
+Pack verified on PC and handheld:
+74b53e5e8545f8e0da97850b5a5df7160e004a283ac9d91dc4fd5cf66fc4e59a
+Installed /storage/roms/ports_scripts/Startrail Maze.sh after suite and controls passed.
+Launcher SHA256 ca05ea188ea14571cab38e64242d087773caeadc9e48e06de1a243dada5a9b2b
+sh -n passed; cmp matched staged launcher. gamelist.xml checksum OK before and after installation.
+Suite wrapper SUITE_EXIT=0 EMUSTATION=active; controls wrapper TEST_EXIT=0 EMUSTATION=active.
+Frontend restart requested after launcher install, then independently verified active.
+Existing games retained. Normal savedata separate from test-savedata.
+Physical controls, menu visibility, audio and perceived smoothness await user playtest.

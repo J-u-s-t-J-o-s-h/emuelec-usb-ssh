@@ -1,0 +1,10 @@
+Performance comparison notes
+These are sequential short runs, not controlled paired experiments.
+Native720 baseline54.39; HUD cache53.55; key batching54.62; reduced overlapping surfaces/avatar batching56.80 FPS.
+600 with clipped HUD59.99 is not a valid completed-interface result.
+600 full shadowed HUD: stages57.55/56.43/57.02 and overview57.02 FPS.
+480 full shadowed HUD: stages57.73/57.29/58.04 and overview57.56 FPS.
+Final candidate returns to600 with plain text on dark panels. Whole scene and HUD upscale to720.
+Benchmark samples callbacks after warmup, not physical display scanout; skips save writes and does not exhaustively traverse all routes.
+Ready ticks are engine uptime, not cold device boot or Ports selection to first frame.
+All automated input checks inject keyboard events; physical pad and perceived smoothness require user playtest.

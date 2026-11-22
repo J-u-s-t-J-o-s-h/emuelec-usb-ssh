@@ -3,6 +3,19 @@
 Updated 2026-11-21. Keep this file current and push a commit at each working
 milestone, before changing direction, and before handing off.
 
+## Latest checkpoint: Startrail Maze installed (2026-11-22)
+Source branch feat/startrail-maze; final pack:
+74b53e5e8545f8e0da97850b5a5df7160e004a283ac9d91dc4fd5cf66fc4e59a.
+600x600 internal image and HUD upscaled to 720, plain text on dark panels.
+All three gardens and overview benchmarked; table and raw logs in
+godot/startrail-maze/README.md and evidence/. Automated FRT keyboard controls passed.
+Separate /storage/roms/ports_scripts/Startrail Maze.sh installed; gamelist checksum
+unchanged; EmulationStation active. Shared runtime backyardbash/frt retained.
+No existing game replaced. Normal saves startrailmaze/savedata; tests test-savedata.
+Next physical action: open Startrail Maze from Ports. Menu visibility, real pad,
+audio and perceived smoothness remain [Unverified] until user confirmation.
+Earlier pending notes below are retained as chronological history, superseded here.
+
 ## Current goal
 Build Startrail Maze: a separate top-down 3D maze adventure targeting roughly 60 FPS.
 User approved 2026-11-21. Three gardens, keys, optional stars, forgiving exploration.

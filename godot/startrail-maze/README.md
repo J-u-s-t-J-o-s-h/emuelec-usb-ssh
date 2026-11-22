@@ -37,9 +37,32 @@ HUD caching alone: 53.55 FPS (device-hud-cache.log).
 Key/gate batching: 54.62 FPS (device-key-batching.log).
 Reduced overlapping surfaces + avatar batching: 56.80 FPS (device-surfaces.log).
 These runs do not establish a controlled causal comparison; all miss the target.
-Current candidate uses 600x600 internal rendering scaled to the 720x720 screen;
-HUD scales with it. [Unverified] Candidate performance pending hardware test.
-Candidate SHA256: 03aaab070783c697b41a3a8d4bc8a6584fb8e4cb9c69e0168767ad00a0da0c69.
+Final build uses **600x600 internal rendering**, upscaled to the 720x720 screen,
+with complete plain-text HUD on dark panels. Whole scene and HUD are scaled.
+Shadowed text was removed. The earlier 59.99 result with clipped HUD is superseded.
+
+## Final handheld validation
+
+| Mode | FPS | Median ms | p95 ms | Worst ms |
+|---|---:|---:|---:|---:|
+| Clover Court | 60.00 | 16.67 | 16.73 | 16.98 |
+| Lavender Lanes | 59.99 | 16.67 | 16.73 | 16.90 |
+| Sunset Garden | 59.99 | 16.67 | 16.73 | 16.90 |
+| Overview | 59.99 | 16.67 | 16.73 | 16.87 |
+
+Evidence: evidence/benchmark-stage-0.log through stage-2.log, benchmark-map.log,
+device-controls.log and deployment.txt. Final screenshot: evidence/device-preview.png.
+All bounded wrappers exited zero and restored EmulationStation.
+Controls tests passed injected-key walking, hop, pause, overview, wall blocking,
+locked/unlocked exit, next-maze entrance and quit. They are not physical-pad tests.
+Ports launcher installed separately; gamelist.xml checksum remained unchanged.
+Final pack SHA256:
+74b53e5e8545f8e0da97850b5a5df7160e004a283ac9d91dc4fd5cf66fc4e59a.
+
+Each benchmark samples about 20 seconds after warmup, follows only one route, and
+skips save writes. Frame intervals are process-callback timing, not display scanout.
+These results are not a promise of identical performance on every route.
+See evidence/validation-notes.txt for experiment history and measurement limits.
 
 ## Known limits
 [Unverified] Physical input, audio, perceived smoothness and full user playthrough.
