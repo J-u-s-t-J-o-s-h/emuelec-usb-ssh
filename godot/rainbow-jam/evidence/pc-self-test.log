@@ -1,0 +1,46 @@
+Godot Engine v4.1.3.stable.official.f06b6836a - https://godotengine.org
+ 
+JAM_READY ticks_ms=279 tones=12 voices=16
+JAM_CHECK PASS audio asset 0
+JAM_CHECK PASS sound and visual 0
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 1
+JAM_CHECK PASS sound and visual 1
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 2
+JAM_CHECK PASS sound and visual 2
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 3
+JAM_CHECK PASS sound and visual 3
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 4
+JAM_CHECK PASS sound and visual 4
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 5
+JAM_CHECK PASS sound and visual 5
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 6
+JAM_CHECK PASS sound and visual 6
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 7
+JAM_CHECK PASS sound and visual 7
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 8
+JAM_CHECK PASS sound and visual 8
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 9
+JAM_CHECK PASS sound and visual 9
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 10
+JAM_CHECK PASS sound and visual 10
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS audio asset 11
+JAM_CHECK PASS sound and visual 11
+JAM_CHECK PASS held key no repeat
+JAM_CHECK PASS bounded audio and animation
+JAM_CHECK PASS key cycle
+JAM_SELF_TEST_PASS
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2047)
+ERROR: Resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:494)

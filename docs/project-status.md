@@ -3,6 +3,12 @@
 Updated 2026-11-21. Keep this file current and push a commit at each working
 milestone, before changing direction, and before handing off.
 
+## Music playground in progress (2026-11-22)
+User reports Startrail Maze works pretty well. Building separate Rainbow Jam on
+feat/rainbow-jam: face buttons piano, D-pad guitar, shoulders drums; animated
+color responses, overlapping voices. Source godot/rainbow-jam/. No device
+performance or listening result yet. Existing games retained.
+
 ## Latest checkpoint: Startrail Maze installed (2026-11-22)
 Source branch feat/startrail-maze; final pack:
 74b53e5e8545f8e0da97850b5a5df7160e004a283ac9d91dc4fd5cf66fc4e59a.
